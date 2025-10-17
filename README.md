@@ -1,321 +1,242 @@
-# Figma to Code MCP Pipeline
+# AI Design System
 
-A complete pipeline that extracts design system components from Figma, generates shadcn-style React components with Tailwind CSS, creates comprehensive documentation with **AI Prompt Libraries**, and exposes them via an MCP server for AI tools.
+> Figma-powered design system with React, TypeScript, and Tailwind CSS. Built with AI-first workflows and global theming.
 
-## 🎯 Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-This pipeline automates the process of:
-1. **Extracting** components and design tokens from Figma
-2. **Generating** React components with TypeScript and Tailwind CSS
-3. **Creating** shadcn-style documentation with AI Prompt Library
-4. **Exposing** components via MCP server for AI tools like Claude Desktop and Cursor
+## 🎨 Overview
 
-## ✨ New: AI Prompt Library
+A production-ready design system that:
+- **Syncs with Figma** - Components extracted from your design files
+- **Global Theming** - CSS variables for instant theme changes
+- **AI-Powered** - MCP server integration for Claude and AI tools
+- **Type-Safe** - Full TypeScript support
+- **Beautiful Docs** - Next.js documentation site with live previews
 
-Each component now includes a curated **Prompt Library** that makes it easy to use AI to build with your design system:
-- 📋 **Copy-paste prompts** for instant code generation
-- 🎯 **Use-case examples** for common scenarios
-- 🔥 **Advanced patterns** for complex features
-- 🤖 **MCP integration** for seamless AI workflows
+## ✨ Features
+
+### 🎨 Design Tokens (CSS Variables)
+Change one variable → all components update globally:
+- **Colors**: `--primary`, `--secondary`, `--success`, `--warning`, etc.
+- **Sizes**: `--button-height-*`, `--icon-*`, `--radius`
+- **Animation**: `--duration-fast`, `--duration-base`, `--duration-slow`
+- **Dark Mode**: Automatic light/dark variants
+
+### 🔧 Theme Switcher
+Live preview of 5 color themes:
+- Default (Teal)
+- Purple
+- Blue
+- Rose
+- Emerald
+
+### 🤖 MCP Server Integration
+Expose your components to Claude and other AI tools:
+```bash
+# List components
+"List my design system components"
+
+# Generate component code
+"Give me a Primary Large button with left icon"
+```
+
+### 📚 Components
+
+#### Button
+4 visual types from Figma:
+- **Primary** - Main actions (teal)
+- **Secondary** - Secondary actions (gray)
+- **Ghost** - Subtle actions (transparent)
+- **White** - Contrast on colored backgrounds
+
+**Variants:**
+- 3 sizes: Small, Base, Large
+- 5 states: Enabled, Hover, Focused, Pressed, Disabled
+- 3 icon positions: None, Left, Right
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/KeleWarg/design-system.git
+cd design-system
+
+# Install dependencies
 npm install
 ```
 
-### 2. Configure Environment
-
-Create a `.env` file:
+### Run Documentation Site
 
 ```bash
-# Copy the example
-cp .env.example .env
-
-# Edit with your credentials
-FIGMA_TOKEN=your_personal_access_token_here
-FIGMA_FILE_KEY=your_figma_file_key_here
+cd docs
+npm install
+npm run dev
 ```
 
-**Getting your credentials:**
-- **FIGMA_TOKEN**: Go to Figma → Settings → Account → Personal Access Tokens
-- **FIGMA_FILE_KEY**: From your Figma file URL: `https://www.figma.com/file/[FILE_KEY]/...`
+Visit http://localhost:3000
 
-### 3. Run the Pipeline
+### Set Up MCP Server (Optional)
 
 ```bash
-# Extract components and generate everything
-npm run extract
-
-# Or run with auto-sync (includes git commit)
-npm run sync
+# Configure for Claude Desktop
+./setup-mcp.sh
 ```
 
-### 4. Start MCP Server
+Restart Claude Desktop, then try:
+```
+"List my design system components"
+"Give me a Primary button"
+```
+
+## 📖 Documentation
+
+- **[Theming Guide](THEMING_GUIDE.md)** - Complete theming documentation
+- **[Component Workflow](COMPONENT_WORKFLOW.md)** - Adding new components
+- **[MCP Setup](SETUP_MCP.md)** - AI integration guide
+- **[Quick Start](THEMING_QUICK_START.md)** - Visual quick reference
+
+## 🎯 Usage
+
+### Change Theme Globally
+
+Edit `docs/app/globals.css`:
+
+```css
+:root {
+  /* Change primary color */
+  --primary: 271 91% 65%;  /* Purple instead of Teal */
+  --primary-hover: 271 91% 60%;
+}
+```
+
+All Primary buttons, badges, and focus rings update automatically!
+
+### Use Button Component
+
+```tsx
+import { Button } from "@/components/ui/button"
+
+// Primary button
+<Button Type="Primary" Size="Base">
+  Click me
+</Button>
+
+// Large button with icon
+<Button Type="Primary" Size="Large" Icon="Left">
+  <IconPlus />
+  Add Item
+</Button>
+
+// Secondary small button
+<Button Type="Secondary" Size="Small">
+  Cancel
+</Button>
+```
+
+### Add New Component
 
 ```bash
-# Start the MCP server
-npm run server
-
-# Or run in development mode with auto-reload
-npm run dev:server
+npm run add-component "Input" "Text input field" "form"
 ```
 
-## 📁 Project Structure
+Follow the prompts to create your component with proper theming.
+
+## 🏗️ Architecture
 
 ```
 design-system/
-├── figma-extract/           # Figma API extraction
-│   ├── extract.ts
-│   └── data/               # Raw extracted data
-├── code-generation/        # Component & config generation
-│   ├── generate-components.ts
-│   └── generate-tailwind-config.ts
-├── components/             # Generated React components
-│   └── ui/
-├── registry/               # Documentation system
-│   ├── schema.ts
-│   ├── generate-docs.ts
-│   └── components/         # Generated docs
-├── mcp-server/            # MCP server for AI tools
-│   └── server.ts
-├── scripts/               # Pipeline orchestration
-│   ├── full-pipeline.ts
-│   └── sync-from-figma.ts
-└── lib/                   # Utilities
-    └── utils.ts
-```
-
-## 🛠️ Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run extract` | Run full pipeline (extract → generate → document) |
-| `npm run sync` | Run pipeline + auto-commit changes to git |
-| `npm run server` | Start MCP server |
-| `npm run dev:server` | Start MCP server with auto-reload |
-| `npm run build` | Build TypeScript to JavaScript |
-
-## 🔧 Configuration
-
-### Core Components
-
-The pipeline is configured to extract 5-10 core components by default:
-
-- Button
-- Input
-- Card
-- Badge
-- Alert
-- Avatar
-- Checkbox
-- Radio
-- Switch
-- Textarea
-
-To modify this list, edit the `CORE_COMPONENTS` array in `figma-extract/extract.ts`.
-
-### Component Styling
-
-Customize component generation by modifying:
-
-- **Base classes**: `getBaseClasses()` in `ComponentGenerator`
-- **Variant mappings**: `mapVariantToClasses()` in `ComponentGenerator`
-- **Design tokens**: Extracted from your Figma file
-
-## 🤖 MCP Server Usage
-
-The MCP server exposes these tools to AI assistants:
-
-### Available Tools
-
-1. **`search_components`** - Search components by name or tag
-2. **`get_component`** - Get full component documentation and code
-3. **`list_components`** - List all available components
-4. **`get_component_code`** - Get just the component code
-
-### Example Queries
-
-- "Show me the Button component"
-- "Search for form components"
-- "List all UI components"
-- "Get the code for the Card component"
-
-## 🔗 MCP Client Configuration
-
-### Claude Desktop
-
-Add to your Claude Desktop configuration:
-
-```json
-{
-  "mcpServers": {
-    "figma-components": {
-      "command": "node",
-      "args": ["/absolute/path/to/mcp-server/server.js"]
-    }
-  }
-}
-```
-
-### Cursor
-
-Add to your Cursor MCP configuration:
-
-```json
-{
-  "mcpServers": {
-    "figma-components": {
-      "command": "node",
-      "args": ["/absolute/path/to/mcp-server/server.js"]
-    }
-  }
-}
-```
-
-## 🔄 Auto-Sync Workflow
-
-The auto-sync feature keeps your components in sync with Figma:
-
-1. **Manual sync**: `npm run sync`
-2. **Automated sync**: Set up a cron job or GitHub Action
-3. **Git integration**: Automatically commits changes with descriptive messages
-
-### GitHub Action Example
-
-```yaml
-name: Sync from Figma
-on:
-  schedule:
-    - cron: '0 9 * * 1'  # Every Monday at 9 AM
-  workflow_dispatch:
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - run: npm install
-      - run: npm run sync
-        env:
-          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
-          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+├── docs/                      # Next.js documentation site
+│   ├── components/ui/         # Component implementations
+│   ├── content/components/    # Component JSON docs
+│   └── app/                   # Next.js app
+├── mcp-server/               # MCP server for AI
+├── scripts/                  # Automation scripts
+├── figma-extract/            # Figma API integration
+└── code-generation/          # Component generators
 ```
 
 ## 🎨 Customization
 
-### Adding New Components
+### Create Custom Theme
 
-1. Add component name to `CORE_COMPONENTS` in `figma-extract/extract.ts`
-2. Add base classes in `ComponentGenerator.getBaseClasses()`
-3. Add variant mappings in `ComponentGenerator.mapVariantToClasses()`
-4. Run `npm run extract`
-
-### Customizing Generated Code
-
-Modify the component template in `ComponentGenerator.renderTemplate()`:
-
-- Change import paths
-- Add custom props
-- Modify component structure
-- Add additional utilities
-
-### Design Token Mapping
-
-Customize how Figma tokens map to Tailwind classes:
-
-- Colors: `extractColors()` in `FigmaExtractor`
-- Typography: `extractTypography()` in `FigmaExtractor`
-- Spacing: `extractSpacing()` in `FigmaExtractor`
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**"Missing environment variables"**
-- Ensure `.env` file exists with `FIGMA_TOKEN` and `FIGMA_FILE_KEY`
-
-**"No components found"**
-- Check that your Figma file has components with names matching `CORE_COMPONENTS`
-- Verify your Figma file key is correct
-
-**"MCP server not connecting"**
-- Ensure the server is running: `npm run server`
-- Check the file path in your MCP client configuration
-- Verify the server builds without errors: `npm run build`
-
-**"Generated components don't look right"**
-- Review the base classes in `ComponentGenerator`
-- Check your Tailwind configuration
-- Verify design tokens are extracted correctly
-
-### Debug Mode
-
-Run with debug logging:
-
-```bash
-DEBUG=* npm run extract
+```css
+/* docs/app/globals.css */
+.theme-sunset {
+  --primary: 14 100% 57%;        /* Orange */
+  --primary-hover: 14 100% 52%;
+  --success: 45 93% 47%;         /* Yellow */
+}
 ```
 
-### Checking Generated Files
-
-```bash
-# Check extracted data
-cat figma-extract/data/components.json
-
-# Check generated components
-ls components/ui/
-
-# Check documentation
-ls registry/components/
+Apply:
+```tsx
+<body className="theme-sunset">
+  {/* All components use sunset colors */}
+</body>
 ```
 
-## 📊 Success Metrics
+### Adjust Button Sizes
 
-### Week 1: Pipeline Working
-- ✅ Extract from Figma successfully
-- ✅ Generate 5-10 components
-- ✅ Create documentation
-- ✅ MCP server running
+```css
+:root {
+  --button-height-base: 3rem;  /* Taller buttons */
+}
+```
 
-### Week 2: Quality Components
-- ✅ Components match designs
-- ✅ Documentation complete
-- ✅ AI queries work perfectly
-- ✅ Team can use generated code
+## 🧪 Testing
 
-### Month 1: Production Ready
-- ✅ All components generated
-- ✅ Automated sync working
-- ✅ Code quality high
-- ✅ Developer adoption
+```bash
+# Validate all components
+npm test
+
+# Test specific component
+npm run test:validate Button
+npm run test:prompts Button
+npm run test:mcp
+```
+
+## 🔗 Figma Integration (Optional)
+
+1. Get Figma API token
+2. Add to `.env`:
+   ```
+   FIGMA_ACCESS_TOKEN=your_token
+   FIGMA_FILE_KEY=your_file_key
+   ```
+3. Run sync:
+   ```bash
+   npm run sync
+   ```
+
+## 📦 Build
+
+```bash
+# Build documentation site
+cd docs && npm run build
+
+# Build MCP server
+npm run build
+```
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+Contributions welcome! Please read [COMPONENT_WORKFLOW.md](COMPONENT_WORKFLOW.md) for the workflow.
 
 ## 📄 License
 
-MIT License - see LICENSE file for details.
+MIT License - see LICENSE file for details
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-- **Issues**: Create a GitHub issue
-- **Documentation**: Check this README
-- **Examples**: See the generated components in `components/ui/`
+- Built with [Next.js](https://nextjs.org/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Component variants with [CVA](https://cva.style/)
+- Inspired by [shadcn/ui](https://ui.shadcn.com/)
 
 ---
 
-**Happy coding!** 🚀
+**Questions?** Check the [documentation](THEMING_GUIDE.md) or open an issue.
 
-This pipeline transforms your Figma design system into a living, AI-accessible component library. Start with the core components, customize as needed, and watch your design system come to life!
-
+**Live Demo:** Visit http://localhost:3000 after running `npm run dev`
