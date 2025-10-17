@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "figma-design-system": {
+      "command": "node",
+      "args": [
+        "/Users/keleibekwe/AIDesignSystem/dist/mcp-server/server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
+
+
