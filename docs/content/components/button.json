@@ -1,0 +1,156 @@
+{
+  "name": "Button",
+  "description": "A versatile button component with multiple variants, sizes, and states. Supports icons on left or right side.",
+  "category": "ui",
+  "installation": {
+    "dependencies": [
+      "class-variance-authority",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "setupSteps": [
+      "Copy the Button component code to `components/ui/button.tsx`",
+      "Ensure you have the `cn` utility function in `lib/utils.ts`",
+      "Add Tailwind CSS classes to your configuration"
+    ]
+  },
+  "code": {
+    "component": "\"use client\"\n\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"../../lib/utils\"\n\nconst buttonVariants = cva(\n  \"inline-flex items-center justify-center rounded font-medium transition-all focus-visible:outline-none disabled:pointer-events-none\",\n  {\n    variants: {\n      Type: {\n        Primary: \"bg-teal-600 text-white hover:bg-teal-700 active:bg-teal-800\",\n        Secondary: \"border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100\",\n        Ghost: \"bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200\",\n        White: \"bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 shadow-sm\"\n      },\n      Icon: {\n        None: \"gap-0\",\n        Left: \"flex-row gap-2\",\n        Right: \"flex-row-reverse gap-2\"\n      },\n      State: {\n        Enabled: \"opacity-100 cursor-pointer\",\n        Hover: \"\",\n        Focused: \"ring-2 ring-teal-500 ring-offset-2\",\n        Pressed: \"scale-[0.98]\",\n        Disabled: \"opacity-40 cursor-not-allowed\"\n      },\n      Size: {\n        Small: \"h-8 px-3 text-xs\",\n        Base: \"h-10 px-4 py-2 text-sm\",\n        Large: \"h-12 px-6 py-3 text-base\"\n      }\n    },\n    defaultVariants: {\n      Type: \"Primary\",\n      Icon: \"None\",\n      State: \"Enabled\",\n      Size: \"Base\"\n    }\n  }\n)\n\nexport interface ButtonProps\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>,\n    VariantProps<typeof buttonVariants> {\n  asChild?: boolean;\n}\n\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\n  ({ className, Type, Icon, State, Size, disabled, ...props }, ref) => {\n    return (\n      <button\n        ref={ref}\n        disabled={disabled || State === \"Disabled\"}\n        className={cn(buttonVariants({ Type, Icon, State, Size, className }))}\n        {...props}\n      />\n    )\n  }\n)\nButton.displayName = \"Button\"\n\nexport { Button, buttonVariants }",
+    "types": "export interface ButtonProps\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>,\n    VariantProps<typeof buttonVariants> {\n  asChild?: boolean;\n}"
+  },
+  "api": {
+    "props": [
+      {
+        "name": "Type",
+        "type": "\"Primary\" | \"Secondary\" | \"Ghost\" | \"White\"",
+        "required": false,
+        "description": "The visual style variant of the button.",
+        "default": "Primary"
+      },
+      {
+        "name": "Size",
+        "type": "\"Small\" | \"Base\" | \"Large\"",
+        "required": false,
+        "description": "The size of the button.",
+        "default": "Base"
+      },
+      {
+        "name": "Icon",
+        "type": "\"None\" | \"Left\" | \"Right\"",
+        "required": false,
+        "description": "Position of the icon relative to the button text.",
+        "default": "None"
+      },
+      {
+        "name": "State",
+        "type": "\"Enabled\" | \"Hover\" | \"Focused\" | \"Pressed\" | \"Disabled\"",
+        "required": false,
+        "description": "The interaction state of the button.",
+        "default": "Enabled"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the button is disabled.",
+        "default": false
+      },
+      {
+        "name": "onClick",
+        "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+        "required": false,
+        "description": "Click event handler."
+      }
+    ]
+  },
+  "prompts": {
+    "basic": [
+      "Give me a Primary button",
+      "Create a Secondary button",
+      "I need a Ghost button",
+      "Show me a Large button",
+      "Create a Small button with Primary type"
+    ],
+    "advanced": [
+      "Create a Primary Large button with a left icon",
+      "I need a Secondary Small button with disabled state",
+      "Give me a Ghost button with an icon on the right",
+      "Create a button group with Primary, Secondary, and Ghost buttons",
+      "Show me all button size variations for Primary type"
+    ],
+    "useCases": [
+      {
+        "scenario": "Hero Section CTA",
+        "prompt": "Create primary and secondary CTA buttons for my hero section",
+        "output": "<div className=\"flex gap-4\">\n  <Button Type=\"Primary\" Size=\"Large\">Get Started</Button>\n  <Button Type=\"Secondary\" Size=\"Large\">Learn More</Button>\n</div>"
+      },
+      {
+        "scenario": "Form Actions",
+        "prompt": "Create submit and cancel buttons for a form",
+        "output": "<div className=\"flex justify-end gap-3\">\n  <Button Type=\"Ghost\" Size=\"Base\">Cancel</Button>\n  <Button Type=\"Primary\" Size=\"Base\">Submit</Button>\n</div>"
+      },
+      {
+        "scenario": "Add Item Button",
+        "prompt": "Create a button to add new items with a plus icon",
+        "output": "<Button Type=\"Primary\" Icon=\"Left\">\n  <PlusIcon className=\"w-4 h-4\" />\n  Add New Item\n</Button>"
+      },
+      {
+        "scenario": "Delete Action",
+        "prompt": "Create a destructive delete button",
+        "output": "<Button Type=\"Secondary\" Size=\"Base\">\n  <TrashIcon className=\"w-4 h-4 text-red-500\" />\n  Delete\n</Button>"
+      },
+      {
+        "scenario": "Navigation",
+        "prompt": "Create a continue button with arrow icon",
+        "output": "<Button Type=\"Primary\" Icon=\"Right\">\n  Continue\n  <ArrowRightIcon className=\"w-4 h-4\" />\n</Button>"
+      },
+      {
+        "scenario": "Loading State",
+        "prompt": "Show a button in loading/disabled state",
+        "output": "<Button Type=\"Primary\" State=\"Disabled\">\n  <Spinner className=\"w-4 h-4 mr-2\" />\n  Processing...\n</Button>"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "name": "Primary Button",
+      "code": "<Button Type=\"Primary\" Size=\"Base\">Button</Button>"
+    },
+    {
+      "name": "Secondary Button",
+      "code": "<Button Type=\"Secondary\" Size=\"Base\">Button</Button>"
+    },
+    {
+      "name": "Ghost Button",
+      "code": "<Button Type=\"Ghost\" Size=\"Base\">Button</Button>"
+    },
+    {
+      "name": "White Button",
+      "code": "<Button Type=\"White\" Size=\"Base\">Button</Button>"
+    },
+    {
+      "name": "Small Size",
+      "code": "<Button Type=\"Primary\" Size=\"Small\">Button</Button>"
+    },
+    {
+      "name": "Large Size",
+      "code": "<Button Type=\"Primary\" Size=\"Large\">Button</Button>"
+    },
+    {
+      "name": "With Icon Left",
+      "code": "<Button Type=\"Primary\" Icon=\"Left\">\n  <svg className=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n    <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M12 4v16m8-8H4\" />\n  </svg>\n  Button\n</Button>"
+    },
+    {
+      "name": "With Icon Right",
+      "code": "<Button Type=\"Primary\" Icon=\"Right\">\n  Button\n  <svg className=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n    <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M9 5l7 7-7 7\" />\n  </svg>\n</Button>"
+    },
+    {
+      "name": "Disabled State",
+      "code": "<Button Type=\"Primary\" State=\"Disabled\">Button</Button>"
+    },
+    {
+      "name": "Focused State",
+      "code": "<Button Type=\"Primary\" State=\"Focused\">Button</Button>"
+    }
+  ]
+}
